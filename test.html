@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>放大镜特效</title>
+		<style>
+			a,address,b,big,blockquote,body,center,cite,code,dd,del,div,dl,dt,em,fieldset,font,form,h1,h2,h3,h4,h5,h6,html,i,iframe,img,ins,label,legend,li,ol,p,pre,small,span,strong,u,ul{margin:0;padding:0}
+			body{background: #ccc;}
+		
+			#img1{position: relative;width: 450px; height: 450px; overflow: hidden;margin: 20px;}
+		
+			#img1 span{display: none;display: block; top: 0;left: 0;position: absolute;width:200px;height: 200px; opacity: .5;filter: alpha(opacity=50);
+			background: #FFFF00;cursor: move;}
+			#two{display: none; width: 600px;height: 600px;overflow: hidden;position: absolute;top:0;left: 550px;}
+			#two img{position: absolute;top:0;left: 0;}
+		</style>
+	</head>
+	<body>
+		
+			<div id="img1">
+				<img  src="img/bg1.jpg"/>
+				<span></span>
+			</div>
+		
+		<div id="two">
+				<img  src="img/bg2.jpg"/>
+		</div>
+	</body>
+	<script>
+		var Domimg1 = getDom('img1');
+		var spanDom = Domimg1.getElementsByTagName('span')[0];
+		var Dom2=getDom('two');
+		var imgDom2=Dom2.children[0]
+		Domimg1.onmouseover=function(){
+			spanDom.style.display='block';
+			Dom2.style.display='block';
+		}
+		Domimg1.onmouseout=function(){
+			spanDom.style.display='none';
+			Dom2.style.display='none';
+		}
+		Domimg1.onmousemove=function(e){
+			e = e || window.event;
+			
+			var x = e.clientX-this.offsetLeft-spanDom.offsetWidth/2;
+			var y = e.clientY-this.offsetTop-spanDom.offsetHeight/2;
+			if(x<0){x=0;}
+			if(y<0){y=0;}
+			if(x>this.offsetWidth-spanDom.offsetWidth){x=this.offsetWidth-spanDom.offsetWidth}
+			if(y>this.offsetHeight-spanDom.offsetHeight){y=this.offsetHeight-spanDom.offsetHeight}
+			spanDom.style.left= x+'px';
+			spanDom.style.top= y+'px';
+		
+			var xpersent=x/(this.offsetWidth-spanDom.offsetWidth);
+			var ypersent=y/(this.offsetHeight-spanDom.offsetHeight);
+			var nwidth=xpersent*(imgDom2.width-Dom2.offsetWidth);
+			var nHeight=ypersent*(imgDom2.height-Dom2.offsetHeight);
+			imgDom2.style.left = -nwidth+'px';
+			imgDom2.style.top = -nHeight+'px';
+		}
+		
+		function getDom(id){
+			return document.getElementById(id);
+		}
+	</script>
+</html>

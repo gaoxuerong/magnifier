@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>放大镜</title>
+		<style>
+			a,address,b,big,blockquote,body,center,cite,code,dd,del,div,dl,dt,em,fieldset,font,form,h1,h2,h3,h4,h5,h6,html,i,iframe,img,ins,label,legend,li,ol,p,pre,small,span,strong,u,ul{margin:0;padding:0}
+			body{background: #111;}
+			#divbox{overflow: hidden; width: 450px;height: 450px;background: #ccc;margin: 40px;position: relative;}
+			#divbox span{width: 200px;height: 200px;background: yellow;position: absolute;top: 0;left: 0;
+			opacity: .5;filter:alpha(opacity=50);  cursor:move ;display: none;}
+			#bigbox{ width: 600px;height: 600px; overflow: hidden;position: absolute;top: 0;left: 540px;}
+			#bigbox img{top:0;left:0;position: absolute;}
+		</style>
+	</head>
+	<body>
+			<div id="divbox">
+				<img src="img/bg1.jpg" />
+				<span></span>
+			</div>
+		<div id="bigbox">			 
+				<img src="img/bg2.jpg" /> 
+		</div>
+	</body>
+	<script>
+		window.onload=function(){
+			//获取divbox,bigbox对象
+			var divboxDom = getDom('divbox');
+			var bigDom = getDom('bigbox');
+			//获取移动的黄色图层
+			var spanDom = divboxDom.getElementsByTagName('span')[0];
+			//获取bigbox第一个子节点
+			var imgDom = bigDom.children[0];
+			//给divbox, bigbox绑定移入移出
+			divboxDom.onmouseover=function(){
+				spanDom.style.display='block';
+				bigDom.style.display='block';
+			}
+			divboxDom.onmouseout=function(){
+				spanDom.style.display='none';
+				bigDom.style.display='none';
+			}
+			//给divbox绑定运动事件
+			divboxDom.onmousemove=function(e){
+				e = e || window.event;
+				var x=e.clientX-this.offsetLeft-spanDom.offsetWidth/2;
+				//spanDom.offsetWidth//黄色图层的宽度；向上移动为负 -；
+				var y=e.clientY-this.offsetTop-spanDom.offsetHeight/2;
+				if(x<0){x=0;}
+				if(y<0){y=0;}
+				
+				if(x>this.offsetWidth-spanDom.offsetWidth){x=this.offsetWidth-spanDom.offsetWidth}
+				if(y>this.offsetHeight-spanDom.offsetHeight){y=this.offsetHeight-spanDom.offsetHeight}
+				spanDom.style.left=x+'px';
+				spanDom.style.top=y+'px'
+			//获取移动的百分比
+			var xpercent = x/(this.offsetWidth-spanDom.offsetWidth); 
+			var ypercent = y/(this.offsetHeight-spanDom.offsetHeight);
+			//获取图片的高度和宽度
+			var imgWidth=imgDom.width;
+			var imgHeight=imgDom.height;
+			//需要移动的宽度和高度
+			var moveWidth=imgWidth - bigDom.offsetWidth;
+			var moveHeight=imgHeight - bigDom.offsetHeight;
+			var nleft=moveWidth*xpercent;
+			var ntop=moveHeight*ypercent;
+			imgDom.style.left= -nleft +'px';
+			imgDom.style.top= -ntop+'px';
+			}
+		}
+		//封装获取元素方法
+		function getDom(id){
+			return document.getElementById(id);
+		}
+	</script>
+</html>
